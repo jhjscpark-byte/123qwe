@@ -1,0 +1,1370 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>편두통 포괄적 관리 (Reveal.js · Soft UI)</title>
+
+  <!-- Reveal.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      /* Main colors */
+      --ivory: #FFFFF0;
+      --green: #2E8B57;      /* SeaGreen */
+      --green2:#556B2F;      /* DarkOliveGreen */
+      --text:  #2F4F4F;      /* DarkSlateGray */
+      --soft:  #F0FFF4;
+
+      /* Neumorphism */
+      --shadow-dark: rgba(47,79,79,0.18);
+      --shadow-light: rgba(255,255,255,0.85);
+
+      /* Typography */
+      --title: 24pt;
+      --body:  17pt;
+      --small: 13.5pt;
+
+      /* Radius */
+      --r-xl: 22px;
+      --r-lg: 18px;
+    }
+
+    body{
+      font-family: "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 700px at 20% 10%, #ffffff 0%, var(--ivory) 40%, #f6fff8 100%);
+      color: var(--text);
+    }
+
+    /* Reveal sizing */
+    .reveal{
+      font-size: var(--body);
+    }
+    .reveal h1, .reveal h2, .reveal h3{
+      font-size: var(--title);
+      letter-spacing: -0.3px;
+      margin: 0 0 14px 0;
+      color: var(--text);
+    }
+    .reveal p, .reveal li{
+      font-size: var(--body);
+      line-height: 1.5;
+    }
+    .muted{ opacity:.82; }
+    .small{ font-size: var(--small); }
+
+    /* Soft UI components */
+    .soft-card{
+      background: linear-gradient(145deg, #ffffff, #f3fff6);
+      border-radius: var(--r-xl);
+      padding: 22px 24px;
+      box-shadow:
+        12px 12px 24px var(--shadow-dark),
+        -12px -12px 24px var(--shadow-light);
+      border: 1px solid rgba(46,139,87,0.10);
+    }
+    .soft-inset{
+      background: linear-gradient(145deg, #f0fff4, #ffffff);
+      border-radius: var(--r-lg);
+      padding: 14px 16px;
+      box-shadow:
+        inset 10px 10px 18px rgba(47,79,79,0.12),
+        inset -10px -10px 18px rgba(255,255,255,0.85);
+      border: 1px solid rgba(46,139,87,0.12);
+    }
+    .pill{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(145deg, #ffffff, #effff4);
+      box-shadow:
+        8px 8px 16px rgba(47,79,79,0.14),
+        -8px -8px 16px rgba(255,255,255,0.9);
+      border: 1px solid rgba(46,139,87,0.14);
+    }
+    .tag{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: var(--small);
+      background: rgba(46,139,87,0.10);
+      color: var(--green);
+      border: 1px solid rgba(46,139,87,0.18);
+    }
+
+    .btn{
+      cursor:pointer;
+      border: 0;
+      color: var(--text);
+      font-size: var(--small);
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffffff, #effff4);
+      box-shadow:
+        10px 10px 20px rgba(47,79,79,0.16),
+        -10px -10px 20px rgba(255,255,255,0.9);
+      border: 1px solid rgba(46,139,87,0.16);
+      transition: transform .12s ease, box-shadow .12s ease;
+      user-select:none;
+    }
+    .btn:active{
+      transform: translateY(1px);
+      box-shadow:
+        inset 10px 10px 18px rgba(47,79,79,0.12),
+        inset -10px -10px 18px rgba(255,255,255,0.85);
+    }
+    .btn.primary{
+      color: #f6fff8;
+      background: linear-gradient(145deg, #2f9961, #257449);
+      border: 1px solid rgba(46,139,87,0.35);
+      box-shadow:
+        10px 10px 20px rgba(46,139,87,0.22),
+        -10px -10px 20px rgba(255,255,255,0.88);
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .grid-3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .kpi{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .kpi .n{
+      font-size: 22pt;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .kpi .t{
+      font-size: var(--small);
+      opacity:.88;
+    }
+
+    /* Timeline dots */
+    .timeline{
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items:center;
+      position:relative;
+      padding: 8px 6px 2px;
+      margin-top: 10px;
+    }
+    .timeline:before{
+      content:"";
+      position:absolute;
+      top: 20px;
+      left: 6px;
+      right: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(46,139,87,0.12);
+      box-shadow:
+        inset 6px 6px 10px rgba(47,79,79,0.10),
+        inset -6px -6px 10px rgba(255,255,255,0.75);
+    }
+    .dot{
+      width: 44px; height: 44px;
+      border-radius: 999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 700;
+      color: var(--green);
+      background: linear-gradient(145deg, #ffffff, #effff4);
+      box-shadow:
+        10px 10px 18px rgba(47,79,79,0.16),
+        -10px -10px 18px rgba(255,255,255,0.9);
+      border: 1px solid rgba(46,139,87,0.16);
+      cursor:pointer;
+      transition: transform .12s ease;
+      z-index:1;
+    }
+    .dot:hover{ transform: translateY(-2px); }
+    .dot-label{
+      text-align:center;
+      font-size: var(--small);
+      margin-top: 8px;
+      opacity:.9;
+    }
+
+    /* Tables */
+    table{
+      width:100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      font-size: var(--small);
+    }
+    td, th{
+      padding: 10px 12px;
+      text-align:left;
+    }
+    tr{
+      background: linear-gradient(145deg, #ffffff, #f2fff6);
+      box-shadow:
+        8px 8px 16px rgba(47,79,79,0.12),
+        -8px -8px 16px rgba(255,255,255,0.9);
+      border-radius: 14px;
+    }
+    tr td:first-child, tr th:first-child{ border-top-left-radius: 14px; border-bottom-left-radius: 14px; }
+    tr td:last-child,  tr th:last-child{  border-top-right-radius:14px; border-bottom-right-radius:14px; }
+    th{
+      color: var(--green2);
+      font-weight: 700;
+      background: transparent;
+      box-shadow:none;
+      padding-bottom: 2px;
+    }
+
+    /* Reveal controls tint */
+    .reveal .controls button, .reveal .progress{
+      color: var(--green);
+    }
+    .reveal .progress span{
+      background: var(--green);
+    }
+
+    /* Modal (Sweet simple) */
+    .modal-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 24px;
+      z-index: 9999;
+    }
+    .modal{
+      max-width: 980px;
+      width: min(980px, 94vw);
+      border-radius: var(--r-xl);
+      padding: 18px 18px 16px;
+      background: linear-gradient(145deg, #ffffff, #f3fff6);
+      box-shadow:
+        16px 16px 32px rgba(47,79,79,0.22),
+        -16px -16px 32px rgba(255,255,255,0.9);
+      border: 1px solid rgba(46,139,87,0.18);
+    }
+    .modal .head{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .modal .head h3{
+      margin: 0;
+      font-size: 22pt;
+    }
+    .close-x{
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      display:flex; align-items:center; justify-content:center;
+      border: 1px solid rgba(46,139,87,0.16);
+      background: linear-gradient(145deg, #ffffff, #effff4);
+      box-shadow:
+        10px 10px 20px rgba(47,79,79,0.14),
+        -10px -10px 20px rgba(255,255,255,0.9);
+      cursor:pointer;
+      user-select:none;
+    }
+    .modal .body{
+      font-size: var(--body);
+      line-height: 1.6;
+      padding: 6px 4px 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .grid-2{ grid-template-columns: 1fr; }
+      .grid-3{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 -->
+      <section data-background-gradient="radial-gradient(circle at 15% 10%, #ffffff 0%, #FFFFF0 42%, #f6fff8 100%)">
+        <div class="soft-card">
+          <h1>편두통의 포괄적 이해와 관리 전략</h1>
+          <p class="muted">
+            편두통은 단순한 두통이 아닌 <b>만성 신경계 질환</b>입니다. 정확한 진단, 단계별 증상 이해,
+            그리고 <b>SEEDS</b> 기반 생활 습관 관리가 핵심입니다.
+          </p>
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+            <span class="pill"><span class="tag">Main</span> 초록(#2E8B57) · 아이보리(#FFFFF0)</span>
+            <span class="pill"><span class="tag">Tip</span> 키보드: <b>Space</b> / <b>← →</b> / <b>Esc</b></span>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;">
+            <button class="btn primary" onclick="goToSlide(1)">시작하기</button>
+            <button class="btn" onclick="toggleHelp()">인터랙션 안내</button>
+            <button class="btn" onclick="goToSlide(19)">결론 보기</button>
+          </div>
+          <p class="small muted" style="margin-top:12px;">(Reveal.js · Soft UI · 20 slides)</p>
+        </div>
+      </section>
+
+      <!-- 2: sec-1 -->
+      <section>
+        <div class="grid-2">
+          <div class="soft-card">
+            <h2>1. 편두통의 정의와 부담</h2>
+            <p class="muted">전 세계 인구의 10~15%가 앓는 흔한 뇌질환, 장애생활연수(GBD 2016) 상위.</p>
+
+            <div class="grid-3" style="margin-top:14px;">
+              <div class="soft-inset kpi">
+                <div class="n">10~15%</div>
+                <div class="t">전 세계 유병률(범위)</div>
+              </div>
+              <div class="soft-inset kpi">
+                <div class="n">~17%</div>
+                <div class="t">국내 성인 유병률(보고 범위)</div>
+              </div>
+              <div class="soft-inset kpi">
+                <div class="n">10년</div>
+                <div class="t">증상→확진 평균 지연</div>
+              </div>
+            </div>
+
+            <div class="soft-inset" style="margin-top:14px;">
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">박동성 통증 + 구역/구토 + 빛·소리 공포증 동반</li>
+                <li class="fragment">여성 유병률이 남성보다 2~3배 높게 보고</li>
+                <li class="fragment">학업/경제활동 연령대(10~40대)에서 영향 큼</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="soft-card">
+            <h2>성별 유병률 예시</h2>
+            <div class="soft-inset">
+              <canvas id="chart1" height="220"></canvas>
+              <p class="small muted" style="margin:8px 0 0;">예시 값: 남성 12.8%, 여성 25.9%</p>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+              <button class="btn" onclick="openModal('핵심 메시지', '편두통은 “참는 두통”이 아니라, 조기 진단과 관리가 필요한 신경계 질환입니다. 지연 진단을 줄이기 위해 두통 일기와 전문 진료 연계가 중요합니다.')">요점 보기</button>
+              <button class="btn" onclick="goToSlide(2)">다음(임상 단계)</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3: sec-2 -->
+      <section>
+        <div class="soft-card">
+          <h2>2. 임상 단계와 진행 패턴</h2>
+          <p class="muted">전구기 → 전조기 → 두통기 → 후구기 (4단계). “두통 시간만”이 전부가 아닙니다.</p>
+
+          <div class="soft-inset">
+            <div class="timeline">
+              <div style="text-align:center" onclick="openModal('전구기', '두통 수 시간~2일 전: 피로, 집중력 저하, 뒷목 뻣뻣함, 식욕 변화 등이 나타날 수 있습니다.')">
+                <div class="dot">1</div><div class="dot-label">전구기</div>
+              </div>
+              <div style="text-align:center" onclick="openModal('전조기', '두통 직전 5~60분: 시각/감각/언어 이상(전조). 5분 이상 서서히 진행, 60분 이내 종료가 전형적입니다.')">
+                <div class="dot">2</div><div class="dot-label">전조기</div>
+              </div>
+              <div style="text-align:center" onclick="openModal('두통기', '4~72시간: 박동성 통증, 구역/구토, 빛·소리 공포증 동반. 조기 복용이 중요합니다.')">
+                <div class="dot">3</div><div class="dot-label">두통기</div>
+              </div>
+              <div style="text-align:center" onclick="openModal('후구기', '두통 소멸 후: 쇠약감, 근육통, 사고 기능 저하 등 “멍한” 상태가 수 시간~수 일 지속될 수 있습니다.')">
+                <div class="dot">4</div><div class="dot-label">후구기</div>
+              </div>
+            </div>
+            <p class="small muted" style="margin-top:10px;">각 단계(원형 버튼)를 클릭하면 요약 팝업이 열립니다.</p>
+          </div>
+
+          <div class="soft-inset" style="margin-top:14px;">
+            <table>
+              <thead>
+                <tr><th>단계</th><th>시간</th><th>주요 증상</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>전구기</td><td>수 시간~2일</td><td>피로, 집중력 저하, 뒷목 뻣뻣함</td></tr>
+                <tr><td>전조기</td><td>5~60분</td><td>시각/감각/언어 이상</td></tr>
+                <tr><td>두통기</td><td>4~72시간</td><td>박동성 통증, 구역/구토</td></tr>
+                <tr><td>후구기</td><td>~수 일</td><td>무력감, 멍함, 근육통</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4: sec-3 -->
+      <section>
+        <div class="grid-2">
+          <div class="soft-card">
+            <h2>3. 조짐(전조)의 특징</h2>
+            <p class="muted">전체 환자의 약 1/3에서 경험. 가장 흔한 형태는 <b>시각 전조</b>.</p>
+            <div class="soft-inset">
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">시각 전조(가장 흔함): 섬광·암점·지그재그 패턴</li>
+                <li class="fragment">감각 전조: 손/얼굴 저림, 따끔거림</li>
+                <li class="fragment">언어 전조: 발음·이해 곤란</li>
+              </ul>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+              <button class="btn" onclick="simulateAura()">전조 시뮬레이션</button>
+              <button class="btn" onclick="resetAura()">초기화</button>
+            </div>
+          </div>
+
+          <div class="soft-card">
+            <h2>전조(시각) 체감 뷰</h2>
+            <div id="auraBox" class="soft-inset" style="height:320px; position:relative; overflow:hidden;">
+              <div id="auraHint" class="small muted" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:18px;">
+                버튼을 눌러 섬광암점이 퍼지는 느낌을 간단히 애니메이션으로 확인하세요.
+              </div>
+              <div id="auraRing" style="position:absolute; left:50%; top:50%; width:40px; height:40px; border-radius:999px; border:6px solid rgba(46,139,87,.22); transform:translate(-50%,-50%); display:none;"></div>
+            </div>
+
+            <div class="soft-inset" style="margin-top:14px;">
+              <table>
+                <thead>
+                  <tr><th>유형</th><th>빈도(제시값)</th><th>증상</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>시각</td><td>99%</td><td>섬광, 암점</td></tr>
+                  <tr><td>감각</td><td>30~40%</td><td>저림, 따끔거림</td></tr>
+                  <tr><td>언어</td><td>10~20%</td><td>발음/이해 곤란</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5: sec-4 -->
+      <section>
+        <div class="grid-2">
+          <div class="soft-card">
+            <h2>4. 주요 유발 요인(Trigger)</h2>
+            <p class="muted">뇌의 과활성화가 역치를 넘을 때 촉발됩니다. “나의 패턴”을 찾는 것이 핵심.</p>
+            <div class="soft-inset">
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment"><b>스트레스</b>: 가장 흔한 원인(긴장 후 이완 시에도 발생 가능)</li>
+                <li class="fragment"><b>수면</b>: 부족/과다 모두 트리거</li>
+                <li class="fragment"><b>공복</b>: 저혈당이 신경 자극</li>
+                <li class="fragment"><b>감각</b>: 강한 빛·냄새·소음·날씨 변화</li>
+                <li class="fragment"><b>호르몬</b>: 월경 전후 변화</li>
+              </ul>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+              <button class="btn" onclick="randomizeRadar()">레이더 랜덤</button>
+              <button class="btn" onclick="resetRadar()">초기화</button>
+            </div>
+          </div>
+
+          <div class="soft-card">
+            <h2>트리거 레이더 (예시)</h2>
+            <div class="soft-inset">
+              <canvas id="chart4" height="310"></canvas>
+              <p class="small muted" style="margin:8px 0 0;">개인별 빈도/강도를 일기 기반으로 업데이트하는 용도</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6: sec-5 -->
+      <section>
+        <div class="soft-card">
+          <h2>5. 식단 관리 가이드</h2>
+          <p class="muted">혈관·신경을 자극하는 식품을 줄이고, 뇌 안정에 도움 되는 영양을 확보합니다.</p>
+
+          <div class="grid-3" style="margin-top:14px;">
+            <div class="soft-inset">
+              <div class="tag">제한</div>
+              <p style="margin:10px 0 0;"><b>티라민</b>: 치즈, 와인</p>
+              <p class="small muted">혈관 수축/팽창 변동을 유발할 수 있음</p>
+            </div>
+            <div class="soft-inset">
+              <div class="tag">주의</div>
+              <p style="margin:10px 0 0;"><b>카페인</b>: 과용·금단 두통</p>
+              <p class="small muted">일시적 완화 가능하지만 “의존”은 위험</p>
+            </div>
+            <div class="soft-inset">
+              <div class="tag">권장</div>
+              <p style="margin:10px 0 0;"><b>Mg / Omega-3</b></p>
+              <p class="small muted">시금치·아몬드 / 연어·고등어</p>
+            </div>
+          </div>
+
+          <div class="soft-inset" style="margin-top:14px;">
+            <table>
+              <thead><tr><th>구분</th><th>식품</th><th>이유</th></tr></thead>
+              <tbody>
+                <tr><td>제한</td><td>치즈, 와인</td><td>티라민(혈관 자극)</td></tr>
+                <tr><td>주의</td><td>커피, 콜라</td><td>카페인 의존/금단 두통</td></tr>
+                <tr><td>권장</td><td>시금치, 생선</td><td>마그네슘/항염</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+            <button class="btn" onclick="openModal('식단 체크 팁', '① 끼니를 거르지 않기(공복 트리거). ② 수분 섭취 유지(탈수 예방). ③ “먹고 바로 아팠다”가 아니라, 24~48시간 누적 패턴으로 기록하세요(일기 기반).')">식단 체크 팁</button>
+            <button class="btn" onclick="goToSlide(6)">두통 일기</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7: sec-6 -->
+      <section>
+        <div class="grid-2">
+          <div class="soft-card">
+            <h2>6. 두통 일기의 중요성</h2>
+            <p class="muted">진단·유발 인자 파악·치료 반응 평가의 핵심 도구입니다.</p>
+
+            <div class="soft-inset">
+              <table>
+                <thead><tr><th>항목</th><th>내용</th><th>목적</th></tr></thead>
+                <tbody>
+                  <tr><td>통증</td><td>시간/강도(0-10)</td><td>장애 평가</td></tr>
+                  <tr><td>동반증상</td><td>구토/전조</td><td>유형 분류</td></tr>
+                  <tr><td>환경</td><td>수면/식사/날씨</td><td>트리거 식별</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="soft-inset" style="margin-top:14px;">
+              <p style="margin:0;"><b>빠른 입력 폼(데모)</b> — 값 입력 후 “추가”를 누르면 우측에 누적됩니다.</p>
+              <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:10px;">
+                <input id="dDate" class="soft-inset" style="padding:10px 12px;" type="date">
+                <input id="dIntensity" class="soft-inset" style="padding:10px 12px;" type="number" min="0" max="10" placeholder="강도(0-10)">
+                <input id="dNote" class="soft-inset" style="padding:10px 12px;" type="text" placeholder="메모(예: 공복, 수면부족)">
+              </div>
+              <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+                <button class="btn primary" onclick="addDiary()">추가</button>
+                <button class="btn" onclick="clearDiary()">초기화</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="soft-card">
+            <h2>일기 미리보기</h2>
+            <div class="soft-inset" style="height:370px; overflow:auto;">
+              <div id="diaryList" class="small muted">아직 기록이 없습니다.</div>
+            </div>
+            <p class="small muted" style="margin-top:10px;">앱(Migraine Buddy 등)을 활용하면 시각화/리포트가 쉬워집니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8: sec-7 -->
+      <section>
+        <div class="soft-card">
+          <h2>7. 급성기 치료 원칙</h2>
+          <p class="muted"><b>통증 시작 1시간 이내</b> 복용이 핵심(신경 감작 차단). 오남용은 MOH 위험.</p>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <h3 style="font-size: 18pt; margin:0 0 10px;">Golden Hour 체크</h3>
+              <p class="small muted" style="margin-top:0;">타이머를 눌러 “조기 복용”의 메시지를 강조합니다.</p>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+                <button class="btn primary" onclick="startGolden()">타이머 시작</button>
+                <button class="btn" onclick="stopGolden()">정지</button>
+                <span class="pill"><span class="tag">Time</span> <span id="goldenClock">00:00</span></span>
+              </div>
+              <div id="goldenMsg" class="soft-inset small muted" style="margin-top:12px; display:none;">
+                ✅ <b>1시간 이내</b> 복용은 통증 조절 성공률을 높이고 재발을 줄이는 데 도움이 됩니다.
+              </div>
+            </div>
+
+            <div class="soft-inset">
+              <table>
+                <thead><tr><th>성분</th><th>용량(예시)</th><th>주의</th></tr></thead>
+                <tbody>
+                  <tr><td>아세트아미노펜</td><td>500–1000mg</td><td>간독성 주의</td></tr>
+                  <tr><td>나프록센</td><td>250–500mg</td><td>위장장애</td></tr>
+                  <tr><td>복합제</td><td>1–2캡슐</td><td>남용주의</td></tr>
+                </tbody>
+              </table>
+              <p class="small muted" style="margin:6px 0 0;">주 2일 이상 잦은 진통제 복용은 약물 과용 두통(MOH) 위험이 증가할 수 있습니다.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9: sec-8 -->
+      <section>
+        <div class="grid-2">
+          <div class="soft-card">
+            <h2>8. 트립탄(Triptans) 계열</h2>
+            <p class="muted">편두통 특이 약물. <b>혈관 수축</b> 작용으로 강력하지만, 혈관질환자는 금기.</p>
+            <div class="soft-inset">
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">통증 시작 1시간 이내 복용 시 효과 극대화</li>
+                <li class="fragment">부작용: 가슴 조임, 졸음 등</li>
+                <li class="fragment">금기: 심근경색/뇌졸중 병력, 조절 안 되는 고혈압 등</li>
+              </ul>
+            </div>
+            <div class="soft-inset" style="margin-top:14px;">
+              <table>
+                <thead><tr><th>성분</th><th>특징</th><th>반감기</th></tr></thead>
+                <tbody>
+                  <tr><td>Sumatriptan</td><td>표준 치료제</td><td>2시간</td></tr>
+                  <tr><td>Almotriptan</td><td>내약성</td><td>3–4시간</td></tr>
+                  <tr><td>Frovatriptan</td><td>지속시간↑</td><td>26시간</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="soft-card">
+            <h2>반응률(예시)</h2>
+            <div class="soft-inset">
+              <canvas id="chart8" height="280"></canvas>
+              <p class="small muted" style="margin:8px 0 0;">도넛 차트는 “일반적 예시”이며 개인 반응은 다릅니다.</p>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+              <button class="btn" onclick="openModal('안전 포인트', '트립탄은 혈관 수축 작용이 있어 심혈관 질환, 뇌혈관 질환 병력이 있는 경우 사용이 제한됩니다. 본인에게 금기사항이 있는지 반드시 의료진과 확인하세요.')">안전 포인트</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10: sec-9 -->
+      <section>
+        <div class="soft-card">
+          <h2>9. 신약: 지판트(Gepants) & 디탄(Ditans)</h2>
+          <p class="muted">트립탄을 쓰기 어려운 환자를 위한 옵션. <b>혈관 수축 없이</b> 통증 경로를 조절합니다.</p>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <div class="tag">Gepants</div>
+              <p style="margin:10px 0 0;"><b>CGRP 수용체 차단</b></p>
+              <ul style="margin:8px 0 0; padding-left: 22px;">
+                <li class="fragment">심혈관 부작용(혈관수축) 부담이 상대적으로 적음</li>
+                <li class="fragment">급성/예방 동시 활용 가능(제품별 적응증 차이)</li>
+              </ul>
+            </div>
+            <div class="soft-inset">
+              <div class="tag">Ditans</div>
+              <p style="margin:10px 0 0;"><b>중추 신경계 경로 조절</b></p>
+              <ul style="margin:8px 0 0; padding-left: 22px;">
+                <li class="fragment">혈관 수축 없이 통증만 차단</li>
+                <li class="fragment">어지러움/졸림 등으로 운전·기계조작 주의</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="soft-inset" style="margin-top:14px;">
+            <table>
+              <thead><tr><th>성분</th><th>계열</th><th>특징</th></tr></thead>
+              <tbody>
+                <tr><td>Rimegepant</td><td>지판트</td><td>예방 겸용 가능(적응증 확인)</td></tr>
+                <tr><td>Lasmiditan</td><td>디탄</td><td>혈관 영향 적음(졸림 주의)</td></tr>
+                <tr><td>Ubrogepant</td><td>지판트</td><td>경구용</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11: sec-10 -->
+      <section>
+        <div class="soft-card">
+          <h2>10. 예방 치료 가이드</h2>
+          <p class="muted">월 4–6회 이상(또는 장애 동반)이라면 예방치료를 고려. 목표는 <b>빈도/강도 50% 감소</b>.</p>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <h3 style="font-size: 18pt; margin:0 0 8px;">대상(요약)</h3>
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">월 6일 이상: 장애 유무와 무관하게 권고</li>
+                <li class="fragment">월 4일 이상 + 중등도 장애: 권고</li>
+                <li class="fragment">약물 과용(MOH) 동반: 적극적 개입</li>
+              </ul>
+            </div>
+
+            <div class="soft-inset">
+              <h3 style="font-size: 18pt; margin:0 0 8px;">평가/유지</h3>
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">최소 2개월 이상 사용 후 효과 평가</li>
+                <li class="fragment">효과 확인 시 3–6개월 유지 후 감량 고려</li>
+                <li class="fragment"><b>꾸준함</b>이 성패를 좌우</li>
+              </ul>
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn" onclick="openModal('실행 팁', '예방치료는 “바로 안 낫는다”는 점을 미리 알고 시작하는 것이 중요합니다. 일기(빈도/강도/약물)를 함께 기록하면 효과 평가가 훨씬 정확해집니다.')">실행 팁</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="soft-inset" style="margin-top:14px;">
+            <table>
+              <thead><tr><th>대상 기준</th><th>조건</th><th>비고</th></tr></thead>
+              <tbody>
+                <tr><td>권고</td><td>월 6일 이상</td><td>장애 무관</td></tr>
+                <tr><td>권고</td><td>월 4일 이상</td><td>중등도 장애</td></tr>
+                <tr><td>필수</td><td>약물과용</td><td>만성화 위험</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12: sec-11 -->
+      <section>
+        <div class="soft-card">
+          <h2>11. 경구 예방 약물</h2>
+          <p class="muted">다른 질환 치료제 중 예방 효과가 입증된 약물을 <b>저용량 시작 → 점진 증량</b>.</p>
+
+          <div class="grid-3" style="margin-top:14px;">
+            <div class="soft-inset">
+              <div class="tag">베타차단제</div>
+              <p style="margin:10px 0 0;"><b>Propranolol</b></p>
+              <p class="small muted">고혈압/불안 동반 시 고려</p>
+            </div>
+            <div class="soft-inset">
+              <div class="tag">항경련제</div>
+              <p style="margin:10px 0 0;"><b>Topiramate</b></p>
+              <p class="small muted">체중 감소 가능, 손저림 주의</p>
+            </div>
+            <div class="soft-inset">
+              <div class="tag">항우울제</div>
+              <p style="margin:10px 0 0;"><b>Amitriptyline</b></p>
+              <p class="small muted">불면/긴장형 두통 동반에 유용</p>
+            </div>
+          </div>
+
+          <div class="soft-inset" style="margin-top:14px;">
+            <table>
+              <thead><tr><th>약물군</th><th>성분</th><th>선택 기준</th></tr></thead>
+              <tbody>
+                <tr><td>베타차단제</td><td>Propranolol</td><td>고혈압/불안</td></tr>
+                <tr><td>항경련제</td><td>Topiramate</td><td>비만/만성</td></tr>
+                <tr><td>항우울제</td><td>Amitriptyline</td><td>불면증</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+            <button class="btn" onclick="openModal('용량 원칙', '예방약은 부작용을 줄이기 위해 “낮게 시작해 천천히 올리는” 방식이 일반적입니다. 임의로 중단/증량하지 말고 의료진과 계획을 세우세요.')">용량 원칙</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13: sec-12 -->
+      <section>
+        <div class="grid-2">
+          <div class="soft-card">
+            <h2>12. 주사 치료: 보톡스</h2>
+            <p class="muted">만성 편두통 예방에 사용. 31개 부위, 12주 간격.</p>
+
+            <div class="soft-inset">
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">삼차신경 말단에서 통증 전달 물질 차단</li>
+                <li class="fragment">3회 시술 시 상당수에서 두통일 감소 보고</li>
+                <li class="fragment">장점: 매일 복용 부담↓ / 단점: 비용</li>
+              </ul>
+            </div>
+
+            <div class="soft-inset" style="margin-top:14px;">
+              <table>
+                <thead><tr><th>지표</th><th>결과(제시값)</th><th>해석</th></tr></thead>
+                <tbody>
+                  <tr><td>두통일수</td><td>-10.7일</td><td>감소 경향</td></tr>
+                  <tr><td>HIT-6</td><td>-7.1점</td><td>삶의 질 개선</td></tr>
+                  <tr><td>우울/불안</td><td>개선 보고</td><td>심리 안정 도움 가능</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="soft-card">
+            <h2>주사 포인트 맵(인터랙티브)</h2>
+            <div class="soft-inset" style="height:390px; position:relative; overflow:hidden;">
+              <div class="small muted" style="margin-bottom:10px;">점(●)을 클릭하면 부위 설명이 뜹니다.</div>
+
+              <div style="position:absolute; left:50%; top:52%; transform:translate(-50%,-50%); width:240px; height:300px;
+                          border-radius: 120px 120px 140px 140px;
+                          background: rgba(46,139,87,0.08);
+                          box-shadow: inset 10px 10px 18px rgba(47,79,79,0.10), inset -10px -10px 18px rgba(255,255,255,0.85);
+                          border: 1px solid rgba(46,139,87,0.18);">
+              </div>
+
+              <button class="btn" style="position:absolute; left:49%; top:34%; transform:translate(-50%,-50%);" onclick="openModal('이마', '이마/전두부 부위는 대표적인 보톡스 주사 포인트 중 하나로 안내됩니다.')">●</button>
+              <button class="btn" style="position:absolute; left:60%; top:40%; transform:translate(-50%,-50%);" onclick="openModal('관자', '관자놀이(측두부) 주변은 통증 경로와 관련되어 주사 포인트로 안내됩니다.')">●</button>
+              <button class="btn" style="position:absolute; left:45%; top:56%; transform:translate(-50%,-50%);" onclick="openModal('후두/목', '뒷머리(후두부)와 목 주변은 긴장·통증 전달과 관련해 포인트로 안내됩니다.')">●</button>
+              <button class="btn" style="position:absolute; left:55%; top:73%; transform:translate(-50%,-50%);" onclick="openModal('어깨', '승모근(어깨) 부위는 긴장 완화 목적의 포인트로 안내됩니다.')">●</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14: sec-13 -->
+      <section>
+        <div class="soft-card">
+          <h2>13. 주사 치료: CGRP 항체</h2>
+          <p class="muted">편두통 핵심 물질인 CGRP를 표적으로 차단하는 전용 예방 치료 옵션.</p>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <h3 style="font-size: 18pt; margin:0 0 8px;">특징</h3>
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">효과 발현이 비교적 빠른 편(보고에 따라 차이)</li>
+                <li class="fragment">간/신장 독성 부담이 상대적으로 적다고 안내됨</li>
+                <li class="fragment">투여 편의성(월 1회/분기 등)</li>
+              </ul>
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn" onclick="openModal('급여/접근성', '국가·보험 조건에 따라 급여 기준이 달라질 수 있습니다. 보통은 여러 예방약 실패 후 고려되는 경우가 있어, 본인 상황에 맞는 기준을 의료진과 확인하세요.')">급여/접근성</button>
+              </div>
+            </div>
+
+            <div class="soft-inset">
+              <table>
+                <thead><tr><th>제품명</th><th>성분</th><th>투여법</th></tr></thead>
+                <tbody>
+                  <tr><td>앰겔러티</td><td>Galcanezumab</td><td>월 1회 SC</td></tr>
+                  <tr><td>아조비</td><td>Fremanezumab</td><td>월/분기 SC</td></tr>
+                  <tr><td>바이엡티</td><td>Eptinezumab</td><td>3개월 IV</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 15: sec-14 -->
+      <section>
+        <div class="grid-2">
+          <div class="soft-card">
+            <h2>14. 약물 과용 두통 (MOH)</h2>
+            <p class="muted">진통제 남용이 두통을 더 키우는 악순환. <b>과용 중단</b>이 최우선.</p>
+
+            <div class="soft-inset">
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">기준(예시): 트립탄/복합제 월 10일, 단순진통제 월 15일 이상</li>
+                <li class="fragment">치료: 원인 약물 중단 + 필요 시 예방치료 병행</li>
+                <li class="fragment">예방: 두통 일기 + 복용 횟수 제한 교육</li>
+              </ul>
+            </div>
+
+            <div class="soft-inset" style="margin-top:14px;">
+              <table>
+                <thead><tr><th>약물</th><th>과용 기준</th><th>예시</th></tr></thead>
+                <tbody>
+                  <tr><td>특이약물</td><td>10일/월</td><td>트립탄</td></tr>
+                  <tr><td>복합제</td><td>10일/월</td><td>게보린 등</td></tr>
+                  <tr><td>단순제</td><td>15일/월</td><td>타이레놀 등</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="soft-card">
+            <h2>MOH 기준선(예시)</h2>
+            <div class="soft-inset">
+              <canvas id="chart14" height="300"></canvas>
+              <p class="small muted" style="margin:8px 0 0;">“횟수 제한”이 핵심 메시지입니다.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 16: sec-15 -->
+      <section>
+        <div class="soft-card">
+          <h2>15. 생활 관리: SEEDS</h2>
+          <p class="muted">약물만큼 중요한 생활 습관 전략. 아래 카드 클릭 시 세부 팁이 열립니다.</p>
+
+          <div class="grid-3" style="margin-top:14px;">
+            <div class="soft-inset" style="cursor:pointer" onclick="openModal('S · Sleep', '규칙적 수면(7–8시간). 주말에도 기상·취침 시간을 크게 흔들지 않기. 수면 부족/과다 모두 트리거가 될 수 있어 “일정한 리듬”이 핵심입니다.')">
+              <div class="tag">S</div>
+              <p style="margin:10px 0 0;"><b>Sleep</b></p>
+              <p class="small muted">규칙적 패턴</p>
+            </div>
+            <div class="soft-inset" style="cursor:pointer" onclick="openModal('E · Exercise', '주 3–5회 유산소 운동. 갑자기 과격하게 시작하지 말고 점진적으로. 스트레스 감소와 수면의 질 향상에 도움.')">
+              <div class="tag">E</div>
+              <p style="margin:10px 0 0;"><b>Exercise</b></p>
+              <p class="small muted">유산소 중심</p>
+            </div>
+            <div class="soft-inset" style="cursor:pointer" onclick="openModal('E · Eat', '규칙적 식사, 수분 섭취(예: 하루 2L 목표). 공복/탈수는 흔한 트리거입니다. 특정 식품 트리거는 개인차가 크므로 일기 기반 확인이 좋아요.')">
+              <div class="tag">E</div>
+              <p style="margin:10px 0 0;"><b>Eat</b></p>
+              <p class="small muted">수분·규칙식</p>
+            </div>
+            <div class="soft-inset" style="cursor:pointer" onclick="openModal('D · Diary', '두통 일기는 “패턴 찾기” 도구입니다. 날짜/강도/약물/수면/식사/스트레스/월경/날씨 등을 기록하면 트리거와 치료 반응이 선명해집니다.')">
+              <div class="tag">D</div>
+              <p style="margin:10px 0 0;"><b>Diary</b></p>
+              <p class="small muted">패턴 분석</p>
+            </div>
+            <div class="soft-inset" style="cursor:pointer" onclick="openModal('S · Stress', '명상, 이완, 호흡법으로 뇌 긴장을 낮추는 것이 목표. “큰 스트레스”뿐 아니라 “긴장 후 이완” 시점도 트리거가 될 수 있습니다.')">
+              <div class="tag">S</div>
+              <p style="margin:10px 0 0;"><b>Stress</b></p>
+              <p class="small muted">이완 훈련</p>
+            </div>
+            <div class="soft-inset">
+              <div class="tag">Goal</div>
+              <p style="margin:10px 0 0;"><b>발작 빈도↓</b></p>
+              <p class="small muted">“꾸준함”이 효과를 만듭니다</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+            <button class="btn primary" onclick="goToSlide(16)">비약물적 치료</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 17: sec-16 -->
+      <section>
+        <div class="soft-card">
+          <h2>16. 비약물적 치료 & 이완</h2>
+          <p class="muted">냉찜질·명상·호흡·요가 등은 약물과 함께 “보조 축”으로 도움됩니다.</p>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <table>
+                <thead><tr><th>요법</th><th>방법</th><th>기전</th></tr></thead>
+                <tbody>
+                  <tr><td>냉찜질</td><td>얼음팩 적용</td><td>혈관수축/감각 둔화</td></tr>
+                  <tr><td>명상</td><td>MBSR</td><td>통증 조절력↑</td></tr>
+                  <tr><td>호흡</td><td>복식호흡</td><td>이완 반응</td></tr>
+                </tbody>
+              </table>
+
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn primary" onclick="startBreath()">호흡 가이드 시작</button>
+                <button class="btn" onclick="stopBreath()">정지</button>
+                <span class="pill"><span class="tag">Guide</span> <span id="breathLabel">대기</span></span>
+              </div>
+            </div>
+
+            <div class="soft-inset" style="display:flex; align-items:center; justify-content:center; min-height:260px;">
+              <div style="text-align:center;">
+                <div id="breathCircle" style="width:160px; height:160px; border-radius:999px;
+                  background: rgba(46,139,87,0.10);
+                  border: 1px solid rgba(46,139,87,0.18);
+                  box-shadow: inset 10px 10px 18px rgba(47,79,79,0.10), inset -10px -10px 18px rgba(255,255,255,0.85);
+                  transition: transform 2.6s ease;">
+                </div>
+                <p class="small muted" style="margin-top:10px;">원(●)이 커지면 들숨, 작아지면 날숨</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 18: sec-17 -->
+      <section>
+        <div class="soft-card">
+          <h2>17. 전자약 & 보완 요법</h2>
+          <p class="muted">삼차신경 자극 기기(전자약) 및 영양제는 환자별로 보조적 선택지가 될 수 있습니다.</p>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <div class="tag">전자약</div>
+              <p style="margin:10px 0 0;"><b>삼차신경 자극</b>으로 통증 신호 조절</p>
+              <p class="small muted">약물 부작용이 부담인 경우 대안/보조로 고려(기기·적응증 확인)</p>
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn" onclick="openModal('전자약 포인트', '전자약은 “신경 자극(Neuromodulation)” 방식으로 통증 경로를 조절합니다. 제품별 사용법/적응증이 다르므로 의료진 안내와 제품 정보를 확인하세요.')">자세히</button>
+              </div>
+            </div>
+            <div class="soft-inset">
+              <div class="tag">영양제</div>
+              <p style="margin:10px 0 0;"><b>Mg · 비타민B2 · CoQ10</b></p>
+              <p class="small muted">뇌 에너지 대사/신경 안정에 도움 가능(근거 수준·개인차 존재)</p>
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn" onclick="openModal('보완 요법 팁', '보완 요법은 “주요 치료를 대체”하기보다, 일기 기반으로 반응을 확인하며 보조적으로 활용하는 것이 안전합니다. 이상 반응이 있으면 중단하고 상담하세요.')">활용 팁</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 19: sec-18 -->
+      <section>
+        <div class="soft-card">
+          <h2>18. 임신 중 편두통 관리</h2>
+          <p class="muted">임신 중엔 호르몬 변화로 호전되기도 하지만, 약물 선택이 제한적입니다.</p>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <h3 style="font-size: 18pt; margin:0 0 8px;">원칙</h3>
+              <ul style="margin:0; padding-left: 22px;">
+                <li class="fragment">비약물(휴식, 수분, 빛/소리 차단) 우선</li>
+                <li class="fragment">급성기: 아세트아미노펜(일반적 안전 옵션으로 안내)</li>
+                <li class="fragment">일부 약물은 시기별로 주의/금기</li>
+              </ul>
+            </div>
+            <div class="soft-inset">
+              <table>
+                <thead><tr><th>시기</th><th>권장</th><th>금기/주의</th></tr></thead>
+                <tbody>
+                  <tr><td>전 기간</td><td>비약물, 타이레놀(예시)</td><td>맥각제</td></tr>
+                  <tr><td>1분기</td><td>약물 최소화</td><td>발프로산</td></tr>
+                  <tr><td>예방</td><td>마그네슘(예시)</td><td>일부 항경련제</td></tr>
+                </tbody>
+              </table>
+              <p class="small muted" style="margin:8px 0 0;">임신/수유는 개인 상황에 따라 권고가 달라질 수 있으니 반드시 의료진과 상의하세요.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 20: sec-19 + sec-20 conclusion -->
+      <section>
+        <div class="soft-card">
+          <h2>19–20. 환자 경험 분석(NLP) · 결론: 예방과 동행</h2>
+
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="soft-inset">
+              <div class="tag">NLP / RWD</div>
+              <p style="margin:10px 0 0;"><b>소셜 데이터 분석</b>으로 환자 경험·장벽(비용/피로감 등)을 파악</p>
+              <ul style="margin:8px 0 0; padding-left: 22px;">
+                <li class="fragment">임상시험 외 리얼월드 데이터(RWD) 보완</li>
+                <li class="fragment">치료 순응도/삶의 질 개선 포인트 도출</li>
+              </ul>
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn" onclick="openModal('NLP 활용 예', '환자들의 글을 토픽 모델링/감성 분석으로 요약하면, 실제 치료 장벽(부작용 체감, 비용, 접근성)을 더 빠르게 파악할 수 있습니다.')">예시 보기</button>
+              </div>
+            </div>
+
+            <div class="soft-inset">
+              <div class="tag">Conclusion</div>
+              <p style="margin:10px 0 0;">
+                편두통은 “완치”보다 <b>관리</b>가 중요합니다. <b>인식 전환</b>·<b>조기 예방</b>·<b>맞춤 전략</b>으로
+                통증 없는 맑은 일상을 되찾는 것이 목표입니다.
+              </p>
+              <ul style="margin:8px 0 0; padding-left: 22px;">
+                <li class="fragment"><b>인식</b>: 참지 말고 치료/관리하는 질환</li>
+                <li class="fragment"><b>예방</b>: 만성화 방지의 지름길</li>
+                <li class="fragment"><b>관리</b>: 일기 기반 트리거·약물 최적화 + SEEDS</li>
+              </ul>
+              <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn primary" onclick="goToSlide(0)">처음으로</button>
+                <button class="btn" onclick="toggleOverview()">전체 보기(Esc)</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="small muted" style="margin-top:14px;">© 2025 Migraine Comprehensive Guide · Patient Education</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalBackdrop" class="modal-backdrop" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="head">
+        <h3 id="modalTitle">상세 정보</h3>
+        <div class="close-x" onclick="closeModal()">✕</div>
+      </div>
+      <div id="modalBody" class="body"></div>
+    </div>
+  </div>
+
+  <!-- Reveal.js -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script>
+    // --- Reveal init ---
+    const deck = new Reveal({
+      hash: true,
+      slideNumber: true,
+      transition: "slide",
+      backgroundTransition: "fade",
+      controls: true,
+      progress: true,
+      center: true,
+      width: 1280,
+      height: 720,
+      margin: 0.08
+    });
+    deck.initialize();
+
+    function goToSlide(index){
+      deck.slide(index);
+    }
+    function toggleOverview(){
+      deck.toggleOverview();
+    }
+
+    // --- Modal helpers ---
+    function openModal(title, html){
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalBody').innerHTML = html;
+      document.getElementById('modalBackdrop').style.display = 'flex';
+    }
+    function closeModal(evt){
+      if(evt && evt.target && evt.target.id !== 'modalBackdrop') return;
+      document.getElementById('modalBackdrop').style.display = 'none';
+    }
+
+    // --- Help overlay (reuse modal) ---
+    function toggleHelp(){
+      openModal(
+        "인터랙션 안내",
+        `
+        <div class="soft-inset">
+          <ul style="margin:0; padding-left:22px;">
+            <li><b>슬라이드 네비게이션</b>: Space / ← → / PageUp·PageDown</li>
+            <li><b>전체 보기</b>: Esc</li>
+            <li><b>팝업</b>: 점(●), 타임라인(1~4), 카드/버튼 클릭</li>
+            <li><b>데모</b>: 전조 시뮬레이션, 트리거 레이더 랜덤, 호흡 가이드, 두통 일기 입력</li>
+          </ul>
+        </div>
+        `
+      );
+    }
+
+    // --- Charts ---
+    let chart1, chart4, chart8, chart14;
+
+    function makeCharts(){
+      // Chart 1: prevalence by sex
+      const ctx1 = document.getElementById('chart1');
+      if(ctx1 && !chart1){
+        chart1 = new Chart(ctx1, {
+          type: 'bar',
+          data: {
+            labels: ['남성', '여성'],
+            datasets: [{
+              label: '유병률(%)',
+              data: [12.8, 25.9]
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+
+      // Chart 4: trigger radar
+      const ctx4 = document.getElementById('chart4');
+      if(ctx4 && !chart4){
+        chart4 = new Chart(ctx4, {
+          type: 'radar',
+          data: {
+            labels: ['스트레스', '수면부족', '공복', '날씨/기압', '빛/소리', '냄새'],
+            datasets: [{
+              label: '빈도(예시)',
+              data: [80, 70, 50, 40, 60, 30]
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: { r: { suggestedMin: 0, suggestedMax: 100 } }
+          }
+        });
+      }
+
+      // Chart 8: triptan donut
+      const ctx8 = document.getElementById('chart8');
+      if(ctx8 && !chart8){
+        chart8 = new Chart(ctx8, {
+          type: 'doughnut',
+          data: {
+            labels: ['2시간 내 효과(성공)', '효과 없음/재발'],
+            datasets: [{ data: [65, 35] }]
+          },
+          options: {
+            responsive: true,
+            cutout: '70%',
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
+
+      // Chart 14: MOH thresholds
+      const ctx14 = document.getElementById('chart14');
+      if(ctx14 && !chart14){
+        chart14 = new Chart(ctx14, {
+          type: 'bar',
+          data: {
+            labels: ['트립탄/복합제', '단순 진통제'],
+            datasets: [{
+              label: '월 허용 한계일(일)',
+              data: [10, 15]
+            }]
+          },
+          options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true } }
+          }
+        });
+      }
+    }
+
+    // Ensure charts render when their slide becomes visible
+    deck.on('slidechanged', () => makeCharts());
+    deck.on('ready', () => makeCharts());
+
+    // --- Radar interactions ---
+    function randomizeRadar(){
+      if(!chart4) return;
+      chart4.data.datasets[0].data = chart4.data.datasets[0].data.map(() => Math.floor(20 + Math.random()*75));
+      chart4.update();
+    }
+    function resetRadar(){
+      if(!chart4) return;
+      chart4.data.datasets[0].data = [80,70,50,40,60,30];
+      chart4.update();
+    }
+
+    // --- Aura simulation ---
+    let auraTimer = null;
+    function simulateAura(){
+      const ring = document.getElementById('auraRing');
+      const hint = document.getElementById('auraHint');
+      if(!ring || !hint) return;
+
+      hint.style.display = 'none';
+      ring.style.display = 'block';
+      let size = 40;
+      let alpha = 0.22;
+
+      clearInterval(auraTimer);
+      auraTimer = setInterval(() => {
+        size += 14;
+        alpha = Math.max(0.02, alpha - 0.012);
+        ring.style.width = size + 'px';
+        ring.style.height = size + 'px';
+        ring.style.borderColor = `rgba(46,139,87,${alpha})`;
+        ring.style.borderWidth = Math.max(3, 10 - (size/120));
+        if(size > 360){
+          resetAura();
+        }
+      }, 90);
+    }
+    function resetAura(){
+      const ring = document.getElementById('auraRing');
+      const hint = document.getElementById('auraHint');
+      clearInterval(auraTimer);
+      auraTimer = null;
+      if(ring){
+        ring.style.display = 'none';
+        ring.style.width = '40px';
+        ring.style.height = '40px';
+        ring.style.borderColor = 'rgba(46,139,87,.22)';
+        ring.style.borderWidth = '6px';
+      }
+      if(hint) hint.style.display = 'flex';
+    }
+
+    // --- Golden hour timer ---
+    let goldenInterval = null;
+    let goldenSec = 0;
+    function startGolden(){
+      if(goldenInterval) return;
+      goldenSec = 0;
+      document.getElementById('goldenMsg')?.style && (document.getElementById('goldenMsg').style.display = 'block');
+      goldenInterval = setInterval(() => {
+        goldenSec++;
+        const mm = String(Math.floor(goldenSec/60)).padStart(2,'0');
+        const ss = String(goldenSec%60).padStart(2,'0');
+        const el = document.getElementById('goldenClock');
+        if(el) el.textContent = `${mm}:${ss}`;
+      }, 1000);
+    }
+    function stopGolden(){
+      clearInterval(goldenInterval);
+      goldenInterval = null;
+    }
+
+    // --- Breathing guide ---
+    let breathInterval = null;
+    function startBreath(){
+      const circle = document.getElementById('breathCircle');
+      const label = document.getElementById('breathLabel');
+      if(!circle || !label) return;
+
+      stopBreath();
+      let phase = 0; // 0 inhale, 1 exhale
+      label.textContent = '들숨(4초)';
+
+      // Start inhale
+      circle.style.transform = 'scale(1.18)';
+
+      breathInterval = setInterval(() => {
+        phase = 1 - phase;
+        if(phase === 0){
+          label.textContent = '들숨(4초)';
+          circle.style.transform = 'scale(1.18)';
+        }else{
+          label.textContent = '날숨(6초)';
+          circle.style.transform = 'scale(0.88)';
+        }
+      }, 5200); // approx 4s+6s feel
+    }
+    function stopBreath(){
+      const circle = document.getElementById('breathCircle');
+      const label = document.getElementById('breathLabel');
+      clearInterval(breathInterval);
+      breathInterval = null;
+      if(circle) circle.style.transform = 'scale(1)';
+      if(label) label.textContent = '대기';
+    }
+
+    // --- Diary demo ---
+    const diary = [];
+    function addDiary(){
+      const d = document.getElementById('dDate')?.value || '';
+      const i = document.getElementById('dIntensity')?.value || '';
+      const n = document.getElementById('dNote')?.value || '';
+      if(!d && !i && !n){
+        openModal('입력 필요', '날짜/강도/메모 중 하나는 입력해 주세요.');
+        return;
+      }
+      diary.unshift({ d, i, n, ts: new Date().toISOString() });
+      renderDiary();
+    }
+    function clearDiary(){
+      diary.length = 0;
+      renderDiary();
+    }
+    function renderDiary(){
+      const box = document.getElementById('diaryList');
+      if(!box) return;
+      if(diary.length === 0){
+        box.innerHTML = '아직 기록이 없습니다.';
+        return;
+      }
+      box.innerHTML = diary.map((x, idx) => `
+        <div class="soft-inset" style="margin-bottom:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <span class="tag">#${diary.length-idx}</span>
+            <span><b>날짜</b>: ${x.d || '—'}</span>
+            <span><b>강도</b>: ${x.i || '—'}</span>
+          </div>
+          <div class="small muted" style="margin-top:6px;"><b>메모</b>: ${escapeHtml(x.n || '—')}</div>
+        </div>
+      `).join('');
+    }
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+  </script>
+</body>
+</html>
