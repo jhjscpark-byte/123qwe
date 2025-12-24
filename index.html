@@ -3,68 +3,497 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>생성형 AI 소개</title>
+  <meta name="description" content="생성형 AI를 비전공자도 5~10분 안에 이해할 수 있게 쉽게 정리한 학습 자료 사이트">
+  <title>생성형 AI 한눈에</title>
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Noto Sans KR',sans-serif;margin:0;background:#f7fafc;color:#0f172a}
-    header{background:linear-gradient(90deg,#6ee7b7,#60a5fa);padding:3rem 1rem;color:#022c22}
-    .container{max-width:900px;margin:2rem auto;padding:1rem}
-    h1{margin:0 0 .25rem}
-    section{background:#fff;border-radius:8px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(2,6,23,.06)}
-    footer{color:#6b7280;text-align:center;padding:2rem 1rem;font-size:.9rem}
-    ul{margin:0;padding-left:1.25rem}
-    .badge{display:inline-block;background:#eef2ff;color:#3730a3;padding:.25rem .5rem;border-radius:999px;font-weight:600;font-size:.8rem}
+    :root{
+      --radius:20px;
+      --gap:16px;
+      --shadow-1: 8px 8px 18px rgba(0,0,0,0.12), -8px -8px 18px rgba(255,255,255,0.7);
+      --shadow-2: inset 6px 6px 12px rgba(0,0,0,0.06), inset -6px -6px 12px rgba(255,255,255,0.7);
+      --accent:#6ea8fe;
+      --accent-2:#7ee7b7;
+      --bg:#f2f6fb;
+      --card:#eef6ff;
+      --text:#0f1724;
+      --muted:#475569;
+      --success:#16a34a;
+      --danger:#e11d48;
+    }
+    [data-theme="dark"]{
+      --bg:#0b1220;
+      --card:#0f1724;
+      --accent:#4f83ff;
+      --accent-2:#2fbf99;
+      --text:#e6eef8;
+      --muted:#9aa7b2;
+      --shadow-1: 8px 8px 16px rgba(0,0,0,0.6), -8px -8px 16px rgba(255,255,255,0.02);
+      --shadow-2: inset 6px 6px 12px rgba(0,0,0,0.4), inset -6px -6px 12px rgba(255,255,255,0.02);
+    }
+
+    html,body{height:100%}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Noto Sans KR', Roboto; font-size:16px; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; transition:background .25s ease, color .25s ease}
+
+    /* layout */
+    .wrap{max-width:1100px;margin:24px auto;padding:20px;}
+    header.site{display:flex;align-items:center;gap:12px;justify-content:space-between}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-weight:700;color:var(--text);background:linear-gradient(145deg,var(--card),var(--bg));box-shadow:var(--shadow-1)}
+    h1.title{margin:0;font-size:1.25rem}
+    .lead{color:var(--muted);font-size:.95rem}
+
+    /* nav */
+    nav{display:flex;gap:8px;align-items:center}
+    .nav-links{display:flex;gap:8px}
+    .nav-links a{background:var(--card);padding:8px 12px;border-radius:12px;box-shadow:var(--shadow-1);text-decoration:none;color:var(--text);font-weight:600}
+    .nav-links a.active{outline:3px solid rgba(99,102,241,0.12);transform:translateY(-2px)}
+
+    /* theme controls */
+    .theme-controls{display:flex;gap:10px;align-items:center}
+    .segmented{display:inline-flex;background:var(--card);padding:4px;border-radius:12px;box-shadow:var(--shadow-1)}
+    .segmented input{display:none}
+    .segmented label{padding:8px 12px;border-radius:8px;cursor:pointer;user-select:none;color:var(--muted);font-weight:600}
+    .segmented input:checked + label{background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0));color:var(--text);box-shadow:var(--shadow-2) inset}
+
+    .toggle{width:48px;height:28px;border-radius:999px;background:var(--card);box-shadow:var(--shadow-1);display:flex;align-items:center;padding:4px;cursor:pointer}
+    .toggle .knob{width:20px;height:20px;border-radius:50%;background:var(--bg);box-shadow:6px 6px 12px rgba(0,0,0,0.08), -4px -4px 8px rgba(255,255,255,0.6);transform:translateX(0);transition:transform .18s}
+    .toggle[data-on="true"] .knob{transform:translateX(18px);}
+
+    /* hero */
+    .hero{display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:18px;background:linear-gradient(180deg,var(--card),transparent);box-shadow:var(--shadow-1);margin-top:18px}
+    .hero p{margin:0;font-size:1.05rem}
+    .hero .cta{display:inline-flex;padding:10px 16px;border-radius:12px;background:var(--accent);color:white;font-weight:700;border:none;cursor:pointer;box-shadow:var(--shadow-1);transition:transform .12s}
+    .hero .cta:active{transform:translateY(1px)}
+
+    main{margin-top:18px}
+    section.card{padding:18px;border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow-1);margin-bottom:14px}
+    section.card h2{margin:0 0 8px}
+    .summary{color:var(--muted);margin-bottom:10px}
+    .more{display:none;margin-top:10px;color:var(--muted)}
+    .more.open{display:block}
+    .more-toggle{background:transparent;border:none;color:var(--accent);font-weight:700;cursor:pointer;padding:6px}
+
+    /* how it works tabs */
+    .tabs{display:flex;gap:8px}
+    .tab{padding:10px 14px;border-radius:12px;background:transparent;border:none;cursor:pointer;font-weight:700;color:var(--muted);box-shadow:none}
+    .tab[aria-pressed="true"]{box-shadow:var(--shadow-2) inset;color:var(--text)}
+    .tab-panels{margin-top:12px}
+
+    /* use-case grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+    .case{padding:14px;border-radius:14px;box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:8px}
+    .case .cat{font-size:.85rem;color:var(--muted);font-weight:600}
+
+    .filters{display:flex;gap:8px;margin-bottom:10px}
+    .chip{padding:8px 10px;border-radius:999px;background:var(--card);box-shadow:var(--shadow-1);cursor:pointer;font-weight:700;color:var(--muted)}
+    .chip.active{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:white}
+
+    /* accordion */
+    .acc-item{border-radius:12px;overflow:hidden}
+    .acc-header{display:flex;justify-content:space-between;align-items:center;padding:12px;cursor:pointer}
+    .acc-panel{height:0;overflow:hidden;padding:0 12px;transition:height .22s ease}
+    .acc-panel.open{padding:12px;height:auto}
+
+    /* quiz */
+    .quiz .q{padding:12px;border-radius:12px}
+    .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .opt{padding:10px;border-radius:10px;cursor:pointer;background:var(--card);box-shadow:var(--shadow-1)}
+    .opt.selected{box-shadow:var(--shadow-2) inset;background:linear-gradient(180deg,rgba(0,0,0,0.03),transparent)}
+    .opt.correct{border:2px solid rgba(34,197,94,0.3)}
+    .opt.wrong{border:2px solid rgba(225,29,72,0.2)}
+    .progress{height:10px;background:rgba(0,0,0,0.06);border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;transition:width .4s}
+
+    /* glossary modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.5);z-index:60}
+    .modal.open{display:flex}
+    .modal .panel{background:var(--card);padding:18px;border-radius:14px;box-shadow:var(--shadow-1);max-width:600px}
+
+    /* footer */
+    footer{opacity:.9;color:var(--muted);text-align:center;padding:18px;margin-top:12px}
+
+    /* responsive */
+    @media (max-width:720px){
+      .nav-links{display:none}
+      .mobile-menu{display:flex}
+      header.site{gap:8px}
+    }
+
+    .mobile-menu{display:none}
+
+    /* focus and accessibility */
+    :focus{outline:none}
+    a:focus, button:focus, .tab:focus, .chip:focus, .opt:focus{box-shadow:0 0 0 3px rgba(99,102,241,0.18);border-radius:8px}
+
+    /* reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none!important}
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>생성형 AI(Generative AI)</h1>
-      <p>데이터를 학습해 새롭고 창의적인 콘텐츠를 생성하는 인공지능 기술의 개요</p>
+  <div class="wrap" id="top" data-theme="light">
+    <header class="site" aria-label="사이트 헤더">
+      <div class="brand">
+        <div class="logo" aria-hidden>AI</div>
+        <div>
+          <h1 class="title">생성형 AI 한눈에</h1>
+          <div class="lead">비전공자도 5~10분이면 이해할 수 있어요.</div>
+        </div>
+      </div>
+
+      <div class="theme-controls" role="toolbar" aria-label="테마 선택">
+        <div class="segmented" role="radiogroup" aria-label="테마: 라이트 다크 시스템">
+          <input type="radio" name="theme" id="th-light" value="light"><label for="th-light" tabindex="0">라이트</label>
+          <input type="radio" name="theme" id="th-dark" value="dark"><label for="th-dark" tabindex="0">다크</label>
+          <input type="radio" name="theme" id="th-system" value="system"><label for="th-system" tabindex="0">시스템</label>
+        </div>
+
+        <div class="toggle" role="switch" aria-checked="false" aria-label="라이트/다크 토글" tabindex="0" id="simple-toggle" data-on="false">
+          <div class="knob" aria-hidden></div>
+        </div>
+
+        <nav class="nav-links" aria-label="주요 섹션">
+          <a href="#one" data-target="one" class="nav-link">한눈에</a>
+          <a href="#how" data-target="how" class="nav-link">어떻게 작동?</a>
+          <a href="#where" data-target="where" class="nav-link">어디에 써?</a>
+          <a href="#warn" data-target="warn" class="nav-link">주의할 점</a>
+          <a href="#quiz" data-target="quiz" class="nav-link">퀴즈</a>
+          <a href="#gloss" data-target="gloss" class="nav-link">용어</a>
+        </nav>
+
+        <button class="mobile-menu" aria-expanded="false" aria-label="메뉴 열기" id="menu-btn">☰</button>
+      </div>
+    </header>
+
+    <div class="hero" role="banner">
+      <p><strong>짧게:</strong> 생성형 AI는 입력으로 요청을 주면 새 콘텐츠를 만들어 줍니다.</p>
+      <button class="cta" id="start-btn">바로 시작</button>
     </div>
-  </header>
 
-  <main class="container">
-    <section>
-      <h2>무엇인가요?</h2>
-      <p>생성형 AI는 텍스트, 이미지, 오디오, 영상 등 다양한 형태의 새로운 데이터를 만들어내는 모델을 말합니다. 대표적인 예로 텍스트 생성 모델, 이미지 생성 모델(예: 확산 모델), 음성 합성 모델 등이 있습니다.</p>
-    </section>
+    <main>
+      <!-- 1 한눈에 -->
+      <section id="one" class="card" tabindex="0">
+        <h2>한눈에</h2>
+        <div class="summary">생성형 AI는 사람의 요청(프롬프트)을 받아 텍스트·이미지·음성 등 새 결과를 만듭니다.</div>
+        <ul>
+          <li>할 수 있는 것: 글쓰기, 요약/번역, 아이디어, 이미지 만들기</li>
+        </ul>
+        <button class="more-toggle" aria-expanded="false">더보기</button>
+        <div class="more" aria-hidden>
+          <p>짧은 문장으로 요청하면 빠르게 결과를 얻습니다. 직접 쓰는 것보다 빠른 초안 만들기에 유용합니다.</p>
+        </div>
+      </section>
 
-    <section>
-      <h2>동작 원리(간단히)</h2>
-      <ul>
-        <li>대규모 데이터셋으로 사전 학습: 언어·이미지 패턴을 통계적으로 학습합니다.</li>
-        <li>모델 구조: 트랜스포머(Transformer) 계열이 텍스트/멀티모달에 널리 사용됩니다.</li>
-        <li>생성 과정: 입력(프롬프트)을 받아 확률적으로 다음 단어·픽셀을 예측해 출력합니다.</li>
-      </ul>
-    </section>
+      <!-- 2 어떻게 작동 -->
+      <section id="how" class="card" tabindex="0">
+        <h2>어떻게 작동?</h2>
+        <div class="tabs" role="tablist" aria-label="작동 단계">
+          <button class="tab" role="tab" aria-pressed="true" data-step="0">입력(프롬프트)</button>
+          <button class="tab" role="tab" aria-pressed="false" data-step="1">생성</button>
+          <button class="tab" role="tab" aria-pressed="false" data-step="2">결과</button>
+        </div>
+        <div class="tab-panels">
+          <div class="panel" data-index="0"><strong>입력:</strong> 간단히 무엇을 원하나 말하세요. 예: "간단한 여행 블로그 글"</div>
+          <div class="panel" data-index="1" style="display:none"> <strong>생성:</strong> 모델이 학습한 패턴을 바탕으로 문장이나 이미지를 만들어 냅니다.</div>
+          <div class="panel" data-index="2" style="display:none"> <strong>결과:</strong> 받은 출력은 초안입니다. 필요하면 수정해 사용하세요.</div>
+        </div>
+      </section>
 
-    <section>
-      <h2>활용 사례</h2>
-      <ul>
-        <li>콘텐츠 제작: 블로그 글, 소설, 광고 카피, 이미지 아트워크 생성</li>
-        <li>도움 도구: 코드 생성, 요약·번역, 아이디어 브레인스토밍</li>
-        <li>엔터테인먼트: 게임 자산 생성, 음악 작곡, 대화형 캐릭터</li>
-      </ul>
-    </section>
+      <!-- 3 어디에 써? -->
+      <section id="where" class="card" tabindex="0">
+        <h2>어디에 써?</h2>
+        <div class="filters" role="toolbar" aria-label="필터">
+          <button class="chip active" data-filter="all">전체</button>
+          <button class="chip" data-filter="write">글</button>
+          <button class="chip" data-filter="work">업무</button>
+          <button class="chip" data-filter="study">학습</button>
+          <button class="chip" data-filter="image">이미지</button>
+        </div>
+        <div class="grid" id="cases">
+          <div class="case" data-cat="write">
+            <div class="cat">글쓰기</div>
+            <div class="desc">블로그나 편지 초안을 신속히 만듭니다.</div>
+          </div>
+          <div class="case" data-cat="work">
+            <div class="cat">요약·번역</div>
+            <div class="desc">회의록 요약, 외국어 번역에 도움됩니다.</div>
+          </div>
+          <div class="case" data-cat="study">
+            <div class="cat">아이디어</div>
+            <div class="desc">레시피, 프로젝트 아이디어를 짧게 얻습니다.</div>
+          </div>
+          <div class="case" data-cat="image">
+            <div class="cat">이미지 만들기</div>
+            <div class="desc">짧은 문장으로 그림을 생성합니다.</div>
+          </div>
+          <div class="case" data-cat="work">
+            <div class="cat">문서초안</div>
+            <div class="desc">제안서나 이메일 초안 작성에 유용합니다.</div>
+          </div>
+        </div>
+      </section>
 
-    <section>
-      <h2>이점과 유의점</h2>
-      <ul>
-        <li><strong>이점:</strong> 생산성 향상, 창작의 보조, 개인화된 경험 제공</li>
-        <li><strong>위험/유의점:</strong> 허위정보 생성(랜덤한 허구), 저작권·윤리 문제, 편향성(Bias)</li>
-        <li>실제 적용 시 데이터 품질, 투명성, 인간의 검수 절차가 중요합니다.</li>
-      </ul>
-    </section>
+      <!-- 4 주의할 점 -->
+      <section id="warn" class="card" tabindex="0">
+        <h2>주의할 점</h2>
+        <div class="acc">
+          <div class="acc-item">
+            <div class="acc-header" tabindex="0">틀릴 수 있어요 <span aria-hidden>▸</span></div>
+            <div class="acc-panel">모델이 사실과 다른 내용을 만들 수 있습니다. 결과를 항상 확인하세요.</div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-header" tabindex="0">편향이 있을 수 있어요 <span aria-hidden>▸</span></div>
+            <div class="acc-panel">학습 데이터의 편향 때문에 특정 내용이 치우칠 수 있습니다. 비판적으로 보세요.</div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-header" tabindex="0">개인정보 주의 <span aria-hidden>▸</span></div>
+            <div class="acc-panel">민감한 개인정보는 입력하지 마세요. 외부에 저장될 수 있습니다.</div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-header" tabindex="0">저작권 간단히</div>
+            <div class="acc-panel">생성물의 출처와 저작권을 확인하세요. 필요하면 직접 수정하거나 권리를 확인하세요.</div>
+          </div>
+        </div>
+      </section>
 
-    <section>
-      <h2>더 알아보기</h2>
-      <p>관심이 있다면 트랜스포머, 확산 모델, 대규모 언어 모델(LLM) 관련 자료를 찾아보세요.</p>
-      <p class="badge">간단한 소개 페이지입니다</p>
-    </section>
-  </main>
+      <!-- 5 퀴즈 -->
+      <section id="quiz" class="card quiz" tabindex="0">
+        <h2>퀴즈</h2>
+        <div class="summary">간단한 객관식 3문항. 제출하면 즉시 채점됩니다.</div>
+        <div id="quiz-list">
+          <!-- questions injected by JS -->
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <button id="submit-quiz" class="cta">제출</button>
+          <button id="reset-quiz" class="more-toggle">다시풀기</button>
+        </div>
+        <div style="margin-top:10px">
+          <div class="progress" aria-hidden><i id="quiz-progress"></i></div>
+        </div>
+      </section>
 
-  <footer>
-    © 2025 생성형 AI 소개 — 간단한 예시 페이지
-  </footer>
+      <!-- 6 용어 -->
+      <section id="gloss" class="card" tabindex="0">
+        <h2>용어</h2>
+        <input id="term-search" type="search" placeholder="용어 검색 (예: 프롬프트)" style="width:100%;padding:10px;border-radius:10px;border:none;box-shadow:var(--shadow-1);margin-bottom:10px">
+        <div id="terms" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+          <!-- terms injected -->
+        </div>
+      </section>
+    </main>
+
+    <footer>이 사이트는 학습용입니다</footer>
+
+    <!-- modal -->
+    <div class="modal" id="modal" role="dialog" aria-hidden="true">
+      <div class="panel" role="document">
+        <h3 id="modal-title"></h3>
+        <p id="modal-desc"></p>
+        <div style="text-align:right;margin-top:8px"><button class="more-toggle" id="modal-close">닫기</button></div>
+      </div>
+    </div>
+
+    <!-- mobile drawer -->
+    <div id="drawer" style="position:fixed;right:-320px;top:0;height:100%;width:280px;background:var(--card);box-shadow:var(--shadow-1);padding:18px;transition:right .28s;z-index:80">
+      <div style="display:flex;justify-content:space-between;align-items:center"><strong>메뉴</strong><button id="drawer-close" class="more-toggle">닫기</button></div>
+      <nav style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
+        <a href="#one" class="nav-link">한눈에</a>
+        <a href="#how" class="nav-link">어떻게 작동?</a>
+        <a href="#where" class="nav-link">어디에 써?</a>
+        <a href="#warn" class="nav-link">주의할 점</a>
+        <a href="#quiz" class="nav-link">퀴즈</a>
+        <a href="#gloss" class="nav-link">용어</a>
+      </nav>
+    </div>
+
+  </div>
+
+  <script>
+    // Utility
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const wrap = document.querySelector('.wrap');
+
+    // Theme
+    const themeKey = 'site-theme';
+    const match = window.matchMedia('(prefers-color-scheme: dark)');
+    function applyTheme(t){
+      let final = t;
+      if(t === 'system') final = match.matches ? 'dark' : 'light';
+      wrap.setAttribute('data-theme', final);
+      // sync segmented
+      $$('#th-light, #th-dark, #th-system').forEach(r=>{ if(r.value===t) r.checked=true});
+      // sync toggle
+      $('#simple-toggle').dataset.on = (final==='dark');
+      $('#simple-toggle').setAttribute('aria-checked', final==='dark');
+    }
+    function saveTheme(t){ localStorage.setItem(themeKey,t) }
+
+    // init theme
+    const stored = localStorage.getItem(themeKey) || 'system';
+    applyTheme(stored);
+
+    // listen seg
+    $$('#th-light, #th-dark, #th-system').forEach(r=>{
+      r.addEventListener('change', e=>{ if(e.target.checked){ saveTheme(e.target.value); applyTheme(e.target.value) }})
+    });
+
+    // toggle switch
+    const toggle = $('#simple-toggle');
+    function toggleThemeViaSwitch(){
+      const cur = wrap.getAttribute('data-theme');
+      const next = cur==='dark' ? 'light' : 'dark';
+      saveTheme(next);
+      applyTheme(next);
+      // set segmented to match
+      document.querySelector('#th-'+(next)).checked = true;
+    }
+    toggle.addEventListener('click', toggleThemeViaSwitch);
+    toggle.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); toggleThemeViaSwitch() } });
+
+    // react to system preference changes if 'system' selected
+    match.addEventListener('change', ()=>{ if(localStorage.getItem(themeKey)==='system') applyTheme('system') });
+
+    // Scroll to first section
+    $('#start-btn').addEventListener('click', ()=>{ document.getElementById('one').scrollIntoView({behavior:'smooth'}) });
+
+    // Mobile drawer
+    $('#menu-btn').addEventListener('click', ()=>{ document.getElementById('drawer').style.right='0'; $('#menu-btn').setAttribute('aria-expanded','true') });
+    $('#drawer-close').addEventListener('click', ()=>{ document.getElementById('drawer').style.right='-320px'; $('#menu-btn').setAttribute('aria-expanded','false') });
+
+    // More toggle
+    $$('.more-toggle').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const more = btn.parentElement.querySelector('.more') || btn.nextElementSibling;
+        if(!more) return;
+        const open = more.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+        more.setAttribute('aria-hidden', !open);
+      });
+    });
+
+    // Tabs for how it works
+    const tabs = $$('.tab');
+    tabs.forEach(t=>t.addEventListener('click', e=>{
+      tabs.forEach(x=>x.setAttribute('aria-pressed','false'));
+      t.setAttribute('aria-pressed','true');
+      const idx = t.dataset.step;
+      $$('.panel').forEach(p=>p.style.display='none');
+      document.querySelector('.panel[data-index="'+idx+'"]').style.display='block';
+    }));
+
+    // Filters
+    $$('.chip').forEach(ch=>{
+      ch.addEventListener('click', ()=>{
+        $$('.chip').forEach(c=>c.classList.remove('active'));
+        ch.classList.add('active');
+        const f = ch.dataset.filter;
+        $$('#cases .case').forEach(card=>{
+          card.style.display = (f==='all' || card.dataset.cat===f) ? '' : 'none';
+        });
+      });
+      ch.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); ch.click(); } });
+    });
+
+    // Accordion
+    $$('.acc-header').forEach(h=>{
+      const panel = h.nextElementSibling;
+      h.addEventListener('click', ()=>{
+        const open = panel.classList.toggle('open');
+        if(open){ panel.style.height = panel.scrollHeight + 'px'; } else { panel.style.height = 0; }
+      });
+      h.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); h.click(); } });
+    });
+
+    // Scroll spy
+    const sections = $$('#one,#how,#where,#warn,#quiz,#gloss');
+    const navLinks = $$('.nav-link');
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(ent=>{
+        if(ent.isIntersecting){
+          navLinks.forEach(a=>a.classList.toggle('active', a.dataset.target===ent.target.id || a.getAttribute('href')==='#'+ent.target.id ));
+        }
+      });
+    },{threshold:0.5});
+    sections.forEach(s=>obs.observe(s));
+
+    // nav click smooth
+    navLinks.forEach(a=>{ a.addEventListener('click', e=>{ e.preventDefault(); const id = a.getAttribute('href').slice(1); document.getElementById(id).scrollIntoView({behavior:'smooth'}); if(document.getElementById('drawer').style.right==='0') document.getElementById('drawer').style.right='-320px'; }); });
+
+    // QUIZ
+    const quizData = [
+      {q:'생성형 AI에 입력하는 짧은 요청을 무엇이라고 하나요?', opts:['토큰','프롬프트','환각'], ans:1, explain:'사용자가 모델에 주는 입력을 프롬프트라 합니다.'},
+      {q:'모델이 사실과 다른 내용을 만들어내는 현상은?', opts:['환각','파인튜닝','토큰화'], ans:0, explain:'실제와 다른 정보를 만들어내는 것을 환각이라고 합니다.'},
+      {q:'사용 목적별 필터에 해당하지 않는 항목은?', opts:['글쓰기','이미지 생성','서버 관리'], ans:2, explain:'서버 관리는 생성형 AI의 일반적 활용 항목이 아닙니다.'}
+    ];
+
+    function renderQuiz(){
+      const list = $('#quiz-list'); list.innerHTML='';
+      quizData.forEach((q,i)=>{
+        const container = document.createElement('div'); container.className='q';
+        container.innerHTML = `<div><strong>${i+1}. ${q.q}</strong></div>`;
+        const opts = document.createElement('div'); opts.className='opts';
+        q.opts.forEach((o,j)=>{ const b = document.createElement('button'); b.className='opt'; b.textContent = o; b.setAttribute('data-q',i); b.setAttribute('data-opt',j); b.addEventListener('click', ()=>{ b.classList.toggle('selected'); // single select
+            opts.querySelectorAll('.opt').forEach(x=>{ if(x!==b) x.classList.remove('selected') });
+        }); opts.addEventListener('keydown', e=>{}); opts.appendChild(b); });
+        container.appendChild(opts); list.appendChild(container);
+      });
+    }
+    renderQuiz();
+
+    $('#submit-quiz').addEventListener('click', ()=>{
+      const qs = $$('#quiz-list .q');
+      let score=0; qs.forEach((el,idx)=>{
+        const sel = el.querySelector('.opt.selected');
+        el.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong'));
+        if(sel){ const chosen = Number(sel.dataset.opt); if(chosen===quizData[idx].ans){ sel.classList.add('correct'); score++; } else { sel.classList.add('wrong'); el.querySelectorAll('.opt')[quizData[idx].ans].classList.add('correct'); } }
+        else { el.querySelectorAll('.opt')[quizData[idx].ans].classList.add('correct'); }
+      });
+      const pct = Math.round((score/quizData.length)*100);
+      $('#quiz-progress').style.width = pct+'%';
+      alert('점수: '+score+'/'+quizData.length+' — '+Math.round(pct)+'%');
+    });
+    $('#reset-quiz').addEventListener('click', ()=>{ renderQuiz(); $('#quiz-progress').style.width='0%'; });
+
+    // Glossary
+    const terms = [
+      {k:'프롬프트', d:'모델에 주는 요청 문장입니다. 예: "간단한 레시피 써줘"'},
+      {k:'토큰', d:'텍스트를 나눈 작은 단위(단어나 조각)입니다.'},
+      {k:'환각', d:'모델이 사실과 다른 정보를 만들어내는 현상입니다.'},
+      {k:'학습데이터', d:'모델을 학습시키는 데 사용된 자료입니다.'},
+      {k:'RAG', d:'Retrieval Augmented Generation. 외부 지식을 가져와 답을 만드는 방법입니다.'},
+      {k:'파인튜닝', d:'기존 모델을 특정 목적에 맞게 추가 학습시키는 과정입니다.'}
+    ];
+    function renderTerms(filter=''){
+      const box = $('#terms'); box.innerHTML='';
+      terms.filter(t=>t.k.includes(filter)).forEach(t=>{
+        const el = document.createElement('button'); el.className='case'; el.style.cursor='pointer'; el.innerHTML=`<div style="font-weight:700">${t.k}</div><div style="color:var(--muted);font-size:.95rem">짧은 설명 보기</div>`;
+        el.addEventListener('click', ()=>{ $('#modal-title').textContent = t.k; $('#modal-desc').textContent = t.d; $('#modal').classList.add('open'); $('#modal').setAttribute('aria-hidden','false'); });
+        box.appendChild(el);
+      });
+    }
+    renderTerms();
+
+    $('#term-search').addEventListener('input', e=>{ renderTerms(e.target.value.trim()); });
+    $('#modal-close').addEventListener('click', ()=>{ $('#modal').classList.remove('open'); $('#modal').setAttribute('aria-hidden','true'); });
+    $('#modal').addEventListener('click', e=>{ if(e.target===$('#modal')){ $('#modal').classList.remove('open'); $('#modal').setAttribute('aria-hidden','true'); } });
+
+    // Keyboard accessible segmented labels
+    document.querySelectorAll('.segmented label').forEach(l=>{
+      l.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); l.click(); l.previousElementSibling.checked = true; l.dispatchEvent(new Event('change')); } });
+      l.addEventListener('click', ()=>{ const id = l.getAttribute('for'); const el = document.getElementById(id); el.checked = true; el.dispatchEvent(new Event('change')); });
+    });
+
+    // persist selected segmented on load
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const s = localStorage.getItem(themeKey) || 'system';
+      const el = document.querySelector('#th-'+(s)); if(el) el.checked=true; else document.getElementById('th-system').checked=true;
+    });
+
+    // small accessibility: ensure font-size at least 16
+    document.documentElement.style.fontSize = '16px';
+
+  </script>
 </body>
 </html>
